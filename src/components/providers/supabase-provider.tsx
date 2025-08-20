@@ -30,3 +30,4 @@ export const useSupabase = () => {
 
   return context.supabase
 }
+
