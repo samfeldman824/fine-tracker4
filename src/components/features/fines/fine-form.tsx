@@ -105,7 +105,7 @@ export function FineForm({ onSuccess, onCancel }: FineFormProps) {
           {/* Amount */}
           <div className="space-y-2">
             <label htmlFor="amount" className="text-sm font-medium">
-              Amount *
+              Amount {selectedType === 'warning' ? '' : '*'}
             </label>
             <Input
               id="amount"
@@ -113,8 +113,13 @@ export function FineForm({ onSuccess, onCancel }: FineFormProps) {
               step="0.01"
               min="0"
               max="10000"
-              placeholder="0.00"
-              {...form.register('amount', { valueAsNumber: true })}
+              placeholder={selectedType === 'warning' ? '' : '0.00'}
+              disabled={selectedType === 'warning'}
+              className={selectedType === 'warning' ? 'opacity-50 cursor-not-allowed bg-gray-100' : ''}
+              value={selectedType === 'warning' ? '' : form.watch('amount') || ''}
+              {...form.register('amount', { 
+                valueAsNumber: true,
+              })}
             />
             {form.formState.errors.amount && (
               <p className="text-sm text-red-600">{form.formState.errors.amount.message}</p>
