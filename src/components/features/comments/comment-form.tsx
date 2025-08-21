@@ -65,7 +65,7 @@ export function CommentForm({
     }
   }
 
-  if (!user || !profile) {
+  if (!user) {
     return (
       <Card className="w-full">
         <CardContent className="p-4">
@@ -127,7 +127,7 @@ export function CommentForm({
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-2">
                 <span className="text-xs text-muted-foreground">
-                  Commenting as {profile.display_name}
+                  Commenting as {profile?.display_name || user.email}
                 </span>
               </div>
               

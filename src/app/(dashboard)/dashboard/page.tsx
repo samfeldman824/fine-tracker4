@@ -3,16 +3,16 @@
 import { useState } from 'react'
 import { ProtectedRoute } from '@/components/features/auth/protected-route'
 import { LogoutButton } from '@/components/features/auth/logout-button'
-import { FineForm } from '@/components/features/fines/fine-form'
+import { FineForm, FineList } from '@/components/features/fines'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { useFinesSummary, useRecentFines } from '@/hooks/fines/use-fines'
-import { fineTypeLabels, fineTypeColors, type FineType } from '@/lib/validations/fines'
+import { useFinesSummary } from '@/hooks/fines/use-fines'
+import { useRecentComments } from '@/hooks/comments/use-comments'
 
 export default function DashboardPage() {
   const [showFineForm, setShowFineForm] = useState(false)
   const { data: summary, isLoading: summaryLoading } = useFinesSummary()
-  const { data: recentFines, isLoading: recentLoading } = useRecentFines()
+  const { data: recentComments, isLoading: commentsLoading } = useRecentComments(8)
 
   return (
     <ProtectedRoute>
@@ -23,7 +23,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Summary Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        {/* <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-red-600">Total Fines</CardTitle>
@@ -67,73 +67,79 @@ export default function DashboardPage() {
               </div>
             </CardContent>
           </Card>
-        </div>
+        </div> */}
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Quick Actions */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Quick Actions</CardTitle>
-              <CardDescription>Common actions for managing fines</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <Button 
-                onClick={() => setShowFineForm(true)}
-                className="w-full"
-              >
-                Create New Fine
-              </Button>
-              <Button variant="outline" className="w-full">
-                View All Fines
-              </Button>
-              <Button variant="outline" className="w-full">
-                Generate Report
-              </Button>
-            </CardContent>
-          </Card>
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          {/* Sidebar with actions and recent comments */}
+          <div className="lg:col-span-1 space-y-6">
+            {/* Quick Actions */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Quick Actions</CardTitle>
+                <CardDescription>Common actions</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <Button 
+                  onClick={() => setShowFineForm(true)}
+                  className="w-full"
+                >
+                  Create New Fine
+                </Button>
+                <Button variant="outline" className="w-full">
+                  View All Fines
+                </Button>
+                <Button variant="outline" className="w-full">
+                  Generate Report
+                </Button>
+              </CardContent>
+            </Card>
 
-          {/* Recent Activity */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Recent Activity</CardTitle>
-              <CardDescription>Latest fines and updates</CardDescription>
-            </CardHeader>
-            <CardContent>
-              {recentLoading ? (
-                <div className="space-y-3">
-                  {[...Array(3)].map((_, i) => (
-                    <div key={i} className="animate-pulse">
-                      <div className="h-4 bg-gray-200 rounded mb-2"></div>
-                      <div className="h-3 bg-gray-100 rounded w-2/3"></div>
-                    </div>
-                  ))}
-                </div>
-              ) : recentFines?.data && recentFines.data.length > 0 ? (
-                <div className="space-y-3">
-                  {recentFines.data.map((fine) => (
-                    <div key={fine.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2">
-                          <span className={`px-2 py-1 rounded text-xs font-medium ${fineTypeColors[fine.fine_type as FineType]}`}>
-                            {fineTypeLabels[fine.fine_type as FineType]}
-                          </span>
-                          <span className="text-sm font-medium">${fine.amount.toFixed(2)}</span>
-                        </div>
-                        <p className="text-sm text-gray-600 mt-1 truncate">
-                          {fine.description}
-                        </p>
-                        <p className="text-xs text-gray-500 mt-1">
-                          {fine.subject_name} • {new Date(fine.created_at).toLocaleDateString()}
-                        </p>
+            {/* Recent Comments */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Recent Comments</CardTitle>
+                <CardDescription>Latest replies</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {commentsLoading ? (
+                  <div className="space-y-3">
+                    {[...Array(2)].map((_, i) => (
+                      <div key={i} className="animate-pulse">
+                        <div className="h-3 bg-gray-200 rounded mb-1"></div>
+                        <div className="h-3 bg-gray-100 rounded w-2/3"></div>
                       </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-gray-500 text-center py-8">No recent activity</p>
-              )}
-            </CardContent>
-          </Card>
+                    ))}
+                  </div>
+                ) : recentComments?.data && recentComments.data.length > 0 ? (
+                  <div className="space-y-2">
+                    {recentComments.data.slice(0, 5).map((comment) => (
+                      <div key={comment.id} className="p-2 bg-gray-50 hover:bg-gray-100 rounded text-xs cursor-pointer transition-colors">
+                        <div className="font-medium truncate">
+                          {comment.author_name}: {comment.content.slice(0, 50)}...
+                        </div>
+                        <div className="text-gray-500 truncate">
+                          {comment.fines?.subject_name} • {new Date(comment.created_at || '').toLocaleDateString()}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-gray-500 text-center py-4 text-sm">No recent comments</p>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Main content - Fine List with integrated comments */}
+          <div className="lg:col-span-3">
+            <FineList 
+              showCreateForm={false}
+              limit={10}
+              title="Fines"
+              description="Latest fines with their comment threads - just like Slack!"
+              compact={true}
+            />
+          </div>
         </div>
 
         {/* Fine Form Modal */}
