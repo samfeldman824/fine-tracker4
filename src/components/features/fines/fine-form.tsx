@@ -110,10 +110,10 @@ export function FineForm({ onSuccess, onCancel }: FineFormProps) {
             <Input
               id="amount"
               type="number"
-              step="0.01"
+              step="1"
               min="0"
               max="10000"
-              placeholder={selectedType === 'warning' ? '' : '0.00'}
+              placeholder={selectedType === 'warning' ? '' : '0'}
               disabled={selectedType === 'warning'}
               className={selectedType === 'warning' ? 'opacity-50 cursor-not-allowed bg-gray-100' : ''}
               value={selectedType === 'warning' ? '' : form.watch('amount') || ''}
