@@ -20,39 +20,39 @@ export type Database = {
           author_name: string
           author_username: string
           content: string
-          created_at: string | null
+          created_at: string
           fine_id: string
           id: string
-          is_deleted: boolean | null
-          is_edited: boolean | null
+          is_deleted: boolean
+          is_edited: boolean
           parent_id: string | null
-          updated_at: string | null
+          updated_at: string
         }
         Insert: {
           author_id: string
           author_name: string
           author_username: string
           content: string
-          created_at?: string | null
+          created_at?: string
           fine_id: string
           id?: string
-          is_deleted?: boolean | null
-          is_edited?: boolean | null
+          is_deleted?: boolean
+          is_edited?: boolean
           parent_id?: string | null
-          updated_at?: string | null
+          updated_at?: string
         }
         Update: {
           author_id?: string
           author_name?: string
           author_username?: string
           content?: string
-          created_at?: string | null
+          created_at?: string
           fine_id?: string
           id?: string
-          is_deleted?: boolean | null
-          is_edited?: boolean | null
+          is_deleted?: boolean
+          is_edited?: boolean
           parent_id?: string | null
-          updated_at?: string | null
+          updated_at?: string
         }
         Relationships: [
           {
@@ -81,45 +81,45 @@ export type Database = {
       fines: {
         Row: {
           amount: number
-          comment_count: number | null
-          created_at: string | null
+          comment_count: number
+          created_at: string
           description: string
-          fine_type: Database["public"]["Enums"]["fine_type_enum"] | null
+          fine_type: Database["public"]["Enums"]["fine_type_enum"]
           id: string
-          is_archived: boolean | null
+          is_archived: boolean
           proposer_id: string
           proposer_name: string
           subject_id: string
           subject_name: string
-          updated_at: string | null
+          updated_at: string
         }
         Insert: {
           amount?: number
-          comment_count?: number | null
-          created_at?: string | null
+          comment_count?: number
+          created_at?: string
           description: string
-          fine_type?: Database["public"]["Enums"]["fine_type_enum"] | null
+          fine_type?: Database["public"]["Enums"]["fine_type_enum"]
           id?: string
-          is_archived?: boolean | null
+          is_archived?: boolean
           proposer_id: string
           proposer_name: string
           subject_id: string
           subject_name: string
-          updated_at?: string | null
+          updated_at?: string
         }
         Update: {
           amount?: number
-          comment_count?: number | null
-          created_at?: string | null
+          comment_count?: number
+          created_at?: string
           description?: string
-          fine_type?: Database["public"]["Enums"]["fine_type_enum"] | null
+          fine_type?: Database["public"]["Enums"]["fine_type_enum"]
           id?: string
-          is_archived?: boolean | null
+          is_archived?: boolean
           proposer_id?: string
           proposer_name?: string
           subject_id?: string
           subject_name?: string
-          updated_at?: string | null
+          updated_at?: string
         }
         Relationships: [
           {
@@ -141,35 +141,35 @@ export type Database = {
       users: {
         Row: {
           avatar_url: string | null
-          created_at: string | null
+          created_at: string
           display_name: string
           email: string | null
           id: string
-          is_active: boolean | null
-          role: Database["public"]["Enums"]["user_role"] | null
-          updated_at: string | null
+          is_active: boolean
+          role: Database["public"]["Enums"]["user_role"]
+          updated_at: string
           username: string
         }
         Insert: {
           avatar_url?: string | null
-          created_at?: string | null
+          created_at?: string
           display_name: string
           email?: string | null
-          id?: string
-          is_active?: boolean | null
-          role?: Database["public"]["Enums"]["user_role"] | null
-          updated_at?: string | null
+          id: string
+          is_active?: boolean
+          role?: Database["public"]["Enums"]["user_role"]
+          updated_at?: string
           username: string
         }
         Update: {
           avatar_url?: string | null
-          created_at?: string | null
+          created_at?: string
           display_name?: string
           email?: string | null
           id?: string
-          is_active?: boolean | null
-          role?: Database["public"]["Enums"]["user_role"] | null
-          updated_at?: string | null
+          is_active?: boolean
+          role?: Database["public"]["Enums"]["user_role"]
+          updated_at?: string
           username?: string
         }
         Relationships: []
@@ -316,3 +316,4 @@ export const Constants = {
     },
   },
 } as const
+

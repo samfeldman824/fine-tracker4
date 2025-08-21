@@ -16,13 +16,10 @@ CREATE TABLE comments (
   is_edited BOOLEAN NOT NULL DEFAULT false,
   
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
   
-  -- Constraint to enforce Slack-style threading (no replies to replies)
-  CONSTRAINT slack_style_threading CHECK (
-    parent_id IS NULL OR 
-    (SELECT parent_id FROM comments c WHERE c.id = comments.parent_id) IS NULL
-  )
+  -- Note: Slack-style threading (no replies to replies) is enforced in application code
+  -- Database-level constraint removed due to PostgreSQL subquery limitations in CHECK constraints
 );
 
 -- Indexes for efficient querying
