@@ -56,10 +56,11 @@ export function useRealtimeComments({
             ...old,
             data: old.data.map((existingComment: CommentWithReplies) => {
               if (existingComment.id === comment.parent_id) {
+                const updatedReplies = [...(existingComment.replies || []), comment]
                 return {
                   ...existingComment,
-                  replies: [...(existingComment.replies || []), comment],
-                  reply_count: (existingComment.reply_count || 0) + 1
+                  replies: updatedReplies,
+                  reply_count: updatedReplies.length
                 }
               }
               return existingComment
@@ -120,7 +121,9 @@ export function useRealtimeComments({
               const updatedReplies = rootComment.replies.map((reply: Comment) => 
                 reply.id === comment.id ? { ...reply, ...comment } : reply
               )
-              return { ...rootComment, replies: updatedReplies }
+              // Recalculate reply count based on non-deleted replies
+              const visibleReplies = updatedReplies.filter(r => !r.is_deleted)
+              return { ...rootComment, replies: updatedReplies, reply_count: visibleReplies.length }
             }
             
             return rootComment
@@ -178,7 +181,9 @@ export function useRealtimeComments({
               const updatedReplies = rootComment.replies.map((reply: Comment) => 
                 reply.id === comment.id ? { ...reply, ...comment } : reply
               )
-              return { ...rootComment, replies: updatedReplies }
+              // Recalculate reply count based on non-deleted replies
+              const visibleReplies = updatedReplies.filter(r => !r.is_deleted)
+              return { ...rootComment, replies: updatedReplies, reply_count: visibleReplies.length }
             }
             
             return rootComment

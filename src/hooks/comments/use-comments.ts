@@ -223,8 +223,8 @@ export function useOptimisticCreateComment() {
         fine_id: input.fine_id,
         parent_id: input.parent_id || null,
         author_id: user.id,
-        author_name: profile.display_name,
-        author_username: profile.username,
+        author_name: profile?.display_name || user.email || 'Anonymous',
+        author_username: profile?.username || user.email?.split('@')[0] || 'user',
         content: input.content,
         depth: 0, // Will be calculated on server
         path: null,
