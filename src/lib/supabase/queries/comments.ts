@@ -134,7 +134,7 @@ export async function getComment(id: string) {
 }
 
 // Create a new comment
-export async function createComment(comment: Omit<InsertComment, 'author_name' | 'author_username'>) {
+export async function createComment(comment: { fine_id: string; parent_id?: string | null; content: string }) {
   const supabase = createClient()
   
   // Get current user info

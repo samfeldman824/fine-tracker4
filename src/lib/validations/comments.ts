@@ -14,8 +14,8 @@ export const commentSchema = z.object({
   content: z.string().min(1, 'Comment content is required'),
   
   // Metadata
-  is_deleted: z.boolean().default(false),
-  is_edited: z.boolean().default(false),
+  is_deleted: z.boolean(), //.default(false),
+  is_edited: z.boolean(),//.default(false),
   
   created_at: z.string(),
   updated_at: z.string(),
