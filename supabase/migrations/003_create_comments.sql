@@ -1,7 +1,8 @@
+-- Comments table with proper user and fine relationships
 CREATE TABLE comments (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   fine_id UUID NOT NULL REFERENCES fines(id) ON DELETE CASCADE,
-  author_id UUID NOT NULL REFERENCES users(id),
+  author_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   parent_id UUID REFERENCES comments(id) ON DELETE CASCADE,
   
   -- Denormalized author info

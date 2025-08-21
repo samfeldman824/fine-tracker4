@@ -1,9 +1,10 @@
+-- Fines table with proper user relationships
 CREATE TYPE fine_type_enum AS ENUM ('fine', 'credit', 'warning');
 
 CREATE TABLE fines (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  subject_id UUID NOT NULL REFERENCES users(id),
-  proposer_id UUID NOT NULL REFERENCES users(id),
+  subject_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  proposer_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   
   -- Denormalized user info (avoids joins)
   subject_name TEXT NOT NULL,
@@ -20,7 +21,6 @@ CREATE TABLE fines (
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 
 -- Indexes for performance
 CREATE INDEX idx_fines_subject_id ON fines(subject_id);
