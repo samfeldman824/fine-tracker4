@@ -144,3 +144,23 @@ export async function getRecentFines(limit = 5) {
     .order('created_at', { ascending: false })
     .limit(limit)
 }
+
+// Get user by ID for fine creation
+export async function getUser(userId: string) {
+  const supabase = createClient()
+  return supabase
+    .from('users')
+    .select('id, username, display_name, email')
+    .eq('id', userId)
+    .single()
+}
+
+// Get all active users for dropdown/selection
+export async function getActiveUsers() {
+  const supabase = createClient()
+  return supabase
+    .from('users')
+    .select('id, username, display_name, email')
+    .eq('is_active', true)
+    .order('display_name', { ascending: true })
+}

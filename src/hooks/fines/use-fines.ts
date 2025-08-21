@@ -9,7 +9,9 @@ import {
   deleteFine, 
   toggleArchiveFine,
   getFinesSummary,
-  getRecentFines
+  getRecentFines,
+  getUser,
+  getActiveUsers
 } from '@/lib/supabase/queries/fines'
 import type { CreateFineInput, UpdateFineInput, FineFilters } from '@/lib/validations/fines'
 import { useAuthWithProfile } from '@/hooks/auth/use-auth-with-profile'
@@ -23,6 +25,14 @@ export const finesKeys = {
   detail: (id: string) => [...finesKeys.details(), id] as const,
   summary: () => [...finesKeys.all, 'summary'] as const,
   recent: (limit?: number) => [...finesKeys.all, 'recent', limit] as const,
+}
+
+export const usersKeys = {
+  all: ['users'] as const,
+  lists: () => [...usersKeys.all, 'list'] as const,
+  active: () => [...usersKeys.lists(), 'active'] as const,
+  details: () => [...usersKeys.all, 'detail'] as const,
+  detail: (id: string) => [...usersKeys.details(), id] as const,
 }
 
 // Get all fines with filters
@@ -58,6 +68,23 @@ export function useRecentFines(limit = 5) {
   })
 }
 
+// Get active users
+export function useActiveUsers() {
+  return useQuery({
+    queryKey: usersKeys.active(),
+    queryFn: getActiveUsers,
+  })
+}
+
+// Get single user
+export function useUser(id: string) {
+  return useQuery({
+    queryKey: usersKeys.detail(id),
+    queryFn: () => getUser(id),
+    enabled: !!id,
+  })
+}
+
 // Create fine mutation
 export function useCreateFine() {
   const queryClient = useQueryClient()
@@ -70,12 +97,21 @@ export function useCreateFine() {
       }
 
       // Get subject user info for denormalized data
-      // Note: In real app, you'd query the users table to get subject_name
+      const { data: subjectUser, error: userError } = await getUser(input.subject_id)
+      
+      if (userError) {
+        throw new Error('Failed to find subject user')
+      }
+
+      if (!subjectUser) {
+        throw new Error('Subject user not found')
+      }
+
       const fineData = {
         ...input,
         proposer_id: user.id,
         proposer_name: profile.display_name,
-        subject_name: 'Unknown User', // TODO: Get from users table
+        subject_name: subjectUser.display_name,
       }
 
       return createFine(fineData)
