@@ -21,13 +21,11 @@ export type Database = {
           author_username: string
           content: string
           created_at: string | null
-          depth: number | null
           fine_id: string
           id: string
           is_deleted: boolean | null
           is_edited: boolean | null
           parent_id: string | null
-          path: string[] | null
           updated_at: string | null
         }
         Insert: {
@@ -36,13 +34,11 @@ export type Database = {
           author_username: string
           content: string
           created_at?: string | null
-          depth?: number | null
           fine_id: string
           id?: string
           is_deleted?: boolean | null
           is_edited?: boolean | null
           parent_id?: string | null
-          path?: string[] | null
           updated_at?: string | null
         }
         Update: {
@@ -51,13 +47,11 @@ export type Database = {
           author_username?: string
           content?: string
           created_at?: string | null
-          depth?: number | null
           fine_id?: string
           id?: string
           is_deleted?: boolean | null
           is_edited?: boolean | null
           parent_id?: string | null
-          path?: string[] | null
           updated_at?: string | null
         }
         Relationships: [
