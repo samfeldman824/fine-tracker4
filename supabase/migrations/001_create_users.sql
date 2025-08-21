@@ -8,10 +8,10 @@ CREATE TABLE users (
   display_name TEXT NOT NULL,
   email TEXT UNIQUE,
   avatar_url TEXT,
-  role user_role DEFAULT 'User',
-  is_active BOOLEAN DEFAULT true,
-  created_at TIMESTAMPTZ DEFAULT NOW(),
-  updated_at TIMESTAMPTZ DEFAULT NOW()
+  role user_role NOT NULL DEFAULT 'User',
+  is_active BOOLEAN NOT NULL DEFAULT true,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 -- Create indexes for performance

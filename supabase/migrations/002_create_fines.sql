@@ -10,16 +10,16 @@ CREATE TABLE fines (
   subject_name TEXT NOT NULL,
   proposer_name TEXT NOT NULL,
   
-  fine_type fine_type_enum DEFAULT 'fine',
+  fine_type fine_type_enum NOT NULL DEFAULT 'fine',
   amount DECIMAL(10,2) NOT NULL DEFAULT 0.00,
   description TEXT NOT NULL,
   
   -- Metadata
-  comment_count INTEGER DEFAULT 0,
-  is_archived BOOLEAN DEFAULT false,
+  comment_count INTEGER NOT NULL DEFAULT 0,
+  is_archived BOOLEAN NOT NULL DEFAULT false,
   
-  created_at TIMESTAMPTZ DEFAULT NOW(),
-  updated_at TIMESTAMPTZ DEFAULT NOW()
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 -- Indexes for performance

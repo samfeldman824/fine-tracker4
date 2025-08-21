@@ -12,11 +12,11 @@ CREATE TABLE comments (
   content TEXT NOT NULL,
   
   -- Metadata
-  is_deleted BOOLEAN DEFAULT false,
-  is_edited BOOLEAN DEFAULT false,
+  is_deleted BOOLEAN NOT NULL DEFAULT false,
+  is_edited BOOLEAN NOT NULL DEFAULT false,
   
-  created_at TIMESTAMPTZ DEFAULT NOW(),
-  updated_at TIMESTAMPTZ DEFAULT NOW(),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   
   -- Constraint to enforce Slack-style threading (no replies to replies)
   CONSTRAINT slack_style_threading CHECK (
