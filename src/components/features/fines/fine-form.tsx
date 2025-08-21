@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { createFineSchema, fineTypeLabels, type CreateFineInput, type FineType } from '@/lib/validations/fines'
-import { useCreateFine } from '@/hooks/fines/use-fines'
+import { useCreateFine, useActiveUsers } from '@/hooks/fines/use-fines'
 
 interface FineFormProps {
   onSuccess?: () => void
@@ -17,6 +17,7 @@ interface FineFormProps {
 export function FineForm({ onSuccess, onCancel }: FineFormProps) {
   const [selectedType, setSelectedType] = useState<FineType>('fine')
   const createFineMutation = useCreateFine()
+  const { data: users, isLoading: usersLoading } = useActiveUsers()
 
   const form = useForm<CreateFineInput>({
     resolver: zodResolver(createFineSchema),
@@ -77,11 +78,25 @@ export function FineForm({ onSuccess, onCancel }: FineFormProps) {
             <label htmlFor="subject_id" className="text-sm font-medium">
               Subject *
             </label>
-            <Input
-              id="subject_id"
-              placeholder="User ID (temporary - will be dropdown)"
-              {...form.register('subject_id')}
-            />
+            {usersLoading ? (
+              <div className="flex items-center justify-center p-4 border rounded">
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-900"></div>
+                <span className="ml-2 text-sm">Loading users...</span>
+              </div>
+            ) : (
+              <select
+                id="subject_id"
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                {...form.register('subject_id')}
+              >
+                <option value="">Select a user...</option>
+                {users?.data?.map((user) => (
+                  <option key={user.id} value={user.id}>
+                    {user.display_name} ({user.username})
+                  </option>
+                ))}
+              </select>
+            )}
             {form.formState.errors.subject_id && (
               <p className="text-sm text-red-600">{form.formState.errors.subject_id.message}</p>
             )}
