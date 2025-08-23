@@ -143,13 +143,15 @@ export default function DashboardPage() {
 
           {/* Main content - Fine List with integrated comments */}
           <div className="lg:col-span-3">
-            <FineList 
-              showCreateForm={false}
-              limit={10}
-              title="Fines"
-              description="Latest fines with their comment threads - just like Slack!"
-              compact={true}
-            />
+            <div className="bg-white rounded-xl shadow-sm border border-slate-200/60 overflow-hidden backdrop-blur-sm">
+              <FineList 
+                showCreateForm={false}
+                limit={10}
+                title="Fines"
+                description="Latest fines with their comment threads - just like Slack!"
+                compact={true}
+              />
+            </div>
           </div>
         </div>
 
