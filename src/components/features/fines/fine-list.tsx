@@ -310,8 +310,8 @@ function CompactFineItem({ fine, onClick }: CompactFineItemProps) {
     })
   }
 
-  // Get avatar color based on name
-  const getAvatarColor = (name: string) => {
+  // Get avatar color based on name with better distribution
+  const getAvatarColor = (name: string, seed = '') => {
     const colors = [
       'bg-red-500',
       'bg-blue-500', 
@@ -320,10 +320,29 @@ function CompactFineItem({ fine, onClick }: CompactFineItemProps) {
       'bg-pink-500',
       'bg-indigo-500',
       'bg-yellow-500',
-      'bg-teal-500'
+      'bg-teal-500',
+      'bg-orange-500',
+      'bg-cyan-500',
+      'bg-lime-500',
+      'bg-rose-500',
+      'bg-amber-500',
+      'bg-emerald-500',
+      'bg-violet-500',
+      'bg-sky-500'
     ]
-    const index = name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)
-    return colors[index % colors.length]
+    
+    // Use a more sophisticated hash function for better color distribution
+    const input = (name.trim() + seed).toLowerCase()
+    let hash = 0
+    
+    // DJB2 hash algorithm for better distribution
+    for (let i = 0; i < input.length; i++) {
+      hash = (hash * 33) ^ input.charCodeAt(i)
+    }
+    
+    // Ensure positive number and get index
+    const index = Math.abs(hash) % colors.length
+    return colors[index]
   }
 
   // Get unique commenters for avatars
@@ -385,7 +404,7 @@ function CompactFineItem({ fine, onClick }: CompactFineItemProps) {
                   {commenters.map((commenter: any) => (
                     <div
                       key={commenter.id}
-                      className={`w-4 h-4 rounded ${getAvatarColor(commenter.name)} flex items-center justify-center text-white text-xs font-medium border border-white`}
+                      className={`w-4 h-4 rounded ${getAvatarColor(commenter.name, 'commenter')} flex items-center justify-center text-white text-xs font-medium border border-white`}
                       title={commenter.name}
                     >
                       {commenter.name.charAt(0).toUpperCase()}
