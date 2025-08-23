@@ -16,14 +16,24 @@ import {
 import type { CreateFineInput, UpdateFineInput, FineFilters } from '@/lib/validations/fines'
 import { useAuthWithProfile } from '@/hooks/auth/use-auth-with-profile'
 
-// Query keys
+/**
+ * Query key factories for React Query.
+ * These provide unique keys for caching and refetching data related to fines and users.
+ */
 export const finesKeys = {
+  // Base key for all fines-related queries
   all: ['fines'] as const,
+  // Key for lists of fines (with or without filters)
   lists: () => [...finesKeys.all, 'list'] as const,
+  // Key for a specific list of fines, optionally filtered
   list: (filters?: FineFilters) => [...finesKeys.lists(), filters] as const,
+  // Key for fine details (all details)
   details: () => [...finesKeys.all, 'detail'] as const,
+  // Key for a specific fine's details
   detail: (id: string) => [...finesKeys.details(), id] as const,
+  // Key for summary data about fines
   summary: () => [...finesKeys.all, 'summary'] as const,
+  // Key for recent fines, optionally limited
   recent: (limit?: number) => [...finesKeys.all, 'recent', limit] as const,
 }
 
@@ -35,7 +45,14 @@ export const usersKeys = {
   detail: (id: string) => [...usersKeys.details(), id] as const,
 }
 
-// Get all fines with filters
+/**
+ * useFines is a React Query hook that fetches a list of fines from the backend.
+ * 
+ * - It takes optional filters (such as player, type, etc).
+ * - It uses a unique query key (from finesKeys.list) so React Query can cache and refetch as needed.
+ * - The queryFn (getFines) is called with the filters and is responsible for fetching the data.
+ * - The hook returns the query result, including loading state, error, and data.
+ */
 export function useFines(filters?: FineFilters) {
   return useQuery({
     queryKey: finesKeys.list(filters),

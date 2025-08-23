@@ -34,7 +34,7 @@ export function FineThread({ fine }: FineThreadProps) {
   // Setup real-time updates for this fine's comments
   useRealtimeComments({
     fineId: fine.id,
-    enabled: showComments,
+    enabled: true, // Always enabled to catch new comments
   })
 
   const formatDate = (dateString: string) => {
@@ -94,7 +94,7 @@ export function FineThread({ fine }: FineThreadProps) {
                   onClick={() => setIsReplying(!isReplying)}
                   className="h-7 px-2 text-xs text-muted-foreground hover:text-foreground"
                 >
-                  💬 Reply
+                  Reply
                 </Button>
                 
                 {hasComments && (

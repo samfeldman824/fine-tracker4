@@ -116,13 +116,16 @@ export function FineList({
 
         {/* Messages Container */}
         <div className="overflow-y-auto p-4 space-y-1 max-h-[520px]">
+          {/* Loading state: show skeletons while loading */}
           {isLoading ? (
             <div className="space-y-4">
               {[...Array(3)].map((_, i) => (
                 <CompactFineSkeleton key={i} />
               ))}
             </div>
-          ) : Object.entries(finesByDate).length === 0 ? (
+          ) : 
+          /* Empty state: no fines found */
+          Object.entries(finesByDate).length === 0 ? (
             <div className="text-center py-12 text-gray-500">
               <p>No fines found</p>
               {showCreateForm && (
@@ -136,6 +139,7 @@ export function FineList({
               )}
             </div>
           ) : (
+            /* Fines list */
             Object.entries(finesByDate as Record<string, Fine[]>).map(([date, dateFines]) => (
               <div key={date}>
                 {/* Date Divider */}
