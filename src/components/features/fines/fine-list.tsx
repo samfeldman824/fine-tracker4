@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { FineThread } from './fine-thread'
@@ -38,6 +38,20 @@ export function FineList({
   }
 
   const { data: finesData, isLoading, error } = useFines(queryFilters)
+
+  // Handle ESC key to close modal
+  useEffect(() => {
+    const handleEscapeKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && selectedFine) {
+        setSelectedFine(null)
+      }
+    }
+
+    document.addEventListener('keydown', handleEscapeKey)
+    return () => {
+      document.removeEventListener('keydown', handleEscapeKey)
+    }
+  }, [selectedFine])
 
   // Sort and limit fines
   let fines = finesData?.data || []
