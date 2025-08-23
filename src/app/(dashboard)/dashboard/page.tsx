@@ -16,11 +16,22 @@ export default function DashboardPage() {
 
   return (
     <ProtectedRoute>
-      <div className="p-8 max-w-7xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold">Dashboard</h1>
-          <LogoutButton />
-        </div>
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
+        <div className="p-8 max-w-7xl mx-auto">
+          <div className="flex justify-between items-center mb-8 p-6 bg-white rounded-xl shadow-sm border border-slate-200/60 backdrop-blur-sm">
+            <div className="flex items-center space-x-4">
+              <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold text-lg">🎯</span>
+              </div>
+              <div>
+                <h1 className="text-3xl font-bold bg-gradient-to-r from-slate-900 to-slate-600 bg-clip-text text-transparent">
+                  Dashboard
+                </h1>
+                <p className="text-sm text-slate-500 mt-1">Manage your team fines and discussions</p>
+              </div>
+            </div>
+            <LogoutButton />
+          </div>
 
         {/* Summary Stats */}
         {/* <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
@@ -153,6 +164,7 @@ export default function DashboardPage() {
             </div>
           </div>
         )}
+        </div>
       </div>
     </ProtectedRoute>
   )
