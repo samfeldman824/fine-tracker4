@@ -13,7 +13,7 @@ export async function getComments(fineId: string, filters?: CommentFilters, sort
     .from('comments')
     .select('*')
     .eq('fine_id', fineId)
-    .eq('is_deleted', false)
+    .neq('is_deleted', true)
 
   // Apply filters
   if (filters?.author_id) {
@@ -46,7 +46,8 @@ export async function getComments(fineId: string, filters?: CommentFilters, sort
       query = query.order('created_at', { ascending: true })
       break
     case 'thread':
-      query = query.order('path', { ascending: true, nullsFirst: false })
+      // For thread sorting, we'll sort by created_at and handle threading logic in getThreadedComments
+      query = query.order('created_at', { ascending: true })
       break
     case 'newest':
     default:
@@ -59,7 +60,8 @@ export async function getComments(fineId: string, filters?: CommentFilters, sort
 
 // Get comments in Slack-style threading (top-level comments with flat replies)
 export async function getThreadedComments(fineId: string, sort: CommentSortOption = 'thread'): Promise<{ data: CommentWithReplies[] | null, error: any }> {
-  const { data: comments, error } = await getComments(fineId, undefined, sort)
+  const commentsQuery = getComments(fineId, undefined, sort)
+  const { data: comments, error } = await commentsQuery
   
   if (error || !comments) {
     return { data: null, error }
@@ -251,7 +253,7 @@ export async function getCommentCount(fineId: string) {
     .from('comments')
     .select('id', { count: 'exact' })
     .eq('fine_id', fineId)
-    .eq('is_deleted', false)
+    .neq('is_deleted', true)
 
   if (error) throw error
 
@@ -284,7 +286,7 @@ export async function getRecentComments(limit = 10) {
         proposer_name
       )
     `)
-    .eq('is_deleted', false)
+    .neq('is_deleted', true)
     .order('created_at', { ascending: false })
     .limit(limit)
 }
