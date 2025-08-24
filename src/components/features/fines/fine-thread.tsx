@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { CommentForm } from '@/components/features/comments/comment-form'
@@ -25,17 +25,27 @@ interface FineThreadProps {
 }
 
 export function FineThread({ fine }: FineThreadProps) {
-  const [showComments, setShowComments] = useState(false)
-  const [isReplying, setIsReplying] = useState(false)
-  
   const { user } = useAuthWithProfile()
   const { data: commentsData, isLoading: commentsLoading } = useThreadedComments(fine.id)
+  
+  const [showComments, setShowComments] = useState(false)
+  const [isReplying, setIsReplying] = useState(false)
   
   // Setup real-time updates for this fine's comments
   useRealtimeComments({
     fineId: fine.id,
     enabled: true, // Always enabled to catch new comments
   })
+
+  const comments = commentsData?.data || []
+  const hasComments = comments.length > 0
+  
+  // Auto-show comments when they are loaded and exist
+  useEffect(() => {
+    if (hasComments && !commentsLoading) {
+      setShowComments(true)
+    }
+  }, [hasComments, commentsLoading])
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString)
@@ -53,8 +63,6 @@ export function FineThread({ fine }: FineThreadProps) {
     return date.toLocaleDateString()
   }
 
-  const comments = commentsData?.data || []
-  const hasComments = comments.length > 0
   const actualCommentCount = comments.length
 
   return (
@@ -162,7 +170,6 @@ export function FineThread({ fine }: FineThreadProps) {
                 <CommentItem
                   key={comment.id}
                   comment={comment}
-                  fineId={fine.id}
                   currentUser={user}
                 />
               ))}
@@ -199,11 +206,10 @@ export function FineThread({ fine }: FineThreadProps) {
 
 interface CommentItemProps {
   comment: Comment
-  fineId: string
   currentUser: any
 }
 
-function CommentItem({ comment, fineId, currentUser }: CommentItemProps) {
+function CommentItem({ comment, currentUser }: CommentItemProps) {
   const [isEditing, setIsEditing] = useState(false)
   
   const deleteCommentMutation = useDeleteComment()
@@ -263,7 +269,7 @@ function CommentItem({ comment, fineId, currentUser }: CommentItemProps) {
         {/* Avatar placeholder */}
         <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
           <span className="text-xs font-medium text-primary">
-            {comment.author_name.charAt(0).toUpperCase()}
+            {comment.author_name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()}
           </span>
         </div>
 

@@ -443,14 +443,14 @@ function CompactFineItem({ fine, onClick }: CompactFineItemProps) {
               </span>
               {/* Display mini avatars of people who have commented */}
               {commenters.length > 0 && (
-                <div className="flex -space-x-1 ml-1">
+                <div className="flex space-x-1 ml-1">
                   {commenters.map((commenter: any) => (
                     <div
                       key={commenter.id}
                       className={`w-4 h-4 rounded ${getAvatarColor(commenter.name, 'commenter')} flex items-center justify-center text-white text-xs font-medium border border-white`}
                       title={commenter.name} // Tooltip on hover
                     >
-                      {commenter.name.charAt(0).toUpperCase()}
+                      {commenter.name.split(' ').map((n: string) => n[0]).join('').substring(0, 2).toUpperCase()}
                     </div>
                   ))}
                 </div>
