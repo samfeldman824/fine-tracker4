@@ -13,7 +13,7 @@ export async function getComments(fineId: string, filters?: CommentFilters, sort
     .from('comments')
     .select('*')
     .eq('fine_id', fineId)
-    .neq('is_deleted', true)
+    .eq('is_deleted', false)
 
   // Apply filters
   if (filters?.author_id) {
@@ -252,8 +252,8 @@ export async function getCommentCount(fineId: string) {
   const { data, error } = await supabase
     .from('comments')
     .select('id', { count: 'exact' })
+    .eq('is_deleted', false)
     .eq('fine_id', fineId)
-    .neq('is_deleted', true)
 
   if (error) throw error
 
@@ -286,7 +286,7 @@ export async function getRecentComments(limit = 10) {
         proposer_name
       )
     `)
-    .neq('is_deleted', true)
+    .eq('is_deleted', false)
     .order('created_at', { ascending: false })
     .limit(limit)
 }
