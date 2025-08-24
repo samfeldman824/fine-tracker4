@@ -99,9 +99,6 @@ export default function DashboardPage() {
                 <Button variant="outline" className="w-full">
                   View All Fines
                 </Button>
-                <Button variant="outline" className="w-full">
-                  Generate Report
-                </Button>
               </CardContent>
             </Card>
 
