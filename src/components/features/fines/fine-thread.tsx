@@ -252,6 +252,12 @@ function CommentItem({ comment, currentUser, getAvatarColor }: CommentItemProps)
   const deleteCommentMutation = useDeleteComment()
   const updateCommentMutation = useUpdateComment()
 
+  // Reset error state when starting to edit
+  const handleStartEdit = () => {
+    updateCommentMutation.reset()
+    setIsEditing(true)
+  }
+
   const canEdit = currentUser?.id === comment.author_id
 
   const handleDelete = async () => {
@@ -273,6 +279,8 @@ function CommentItem({ comment, currentUser, getAvatarColor }: CommentItemProps)
       setIsEditing(false)
     } catch (error) {
       console.error('Failed to update comment:', error)
+      // Don't close the form on error, let the user try again
+      // The error will be handled by the mutation and shown in the UI
     }
   }
 
@@ -327,6 +335,7 @@ function CommentItem({ comment, currentUser, getAvatarColor }: CommentItemProps)
               onSave={handleEdit}
               onCancel={() => setIsEditing(false)}
               isLoading={updateCommentMutation.isPending}
+              error={updateCommentMutation.isError}
             />
           ) : (
             <p className="text-sm whitespace-pre-wrap break-words">
@@ -340,7 +349,8 @@ function CommentItem({ comment, currentUser, getAvatarColor }: CommentItemProps)
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => setIsEditing(true)}
+                onClick={handleStartEdit}
+                disabled={updateCommentMutation.isPending}
                 className="h-6 px-2 text-xs"
               >
                 Edit
@@ -356,6 +366,13 @@ function CommentItem({ comment, currentUser, getAvatarColor }: CommentItemProps)
               </Button>
             </div>
           )}
+
+          {/* Show error message if update failed */}
+          {updateCommentMutation.isError && (
+            <div className="mt-2 text-xs text-destructive">
+              Failed to save changes. Please try again.
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -367,9 +384,10 @@ interface EditCommentFormProps {
   onSave: (content: string) => void
   onCancel: () => void
   isLoading: boolean
+  error?: boolean
 }
 
-function EditCommentForm({ initialContent, onSave, onCancel, isLoading }: EditCommentFormProps) {
+function EditCommentForm({ initialContent, onSave, onCancel, isLoading, error }: EditCommentFormProps) {
   const [content, setContent] = useState(initialContent)
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -384,10 +402,17 @@ function EditCommentForm({ initialContent, onSave, onCancel, isLoading }: EditCo
       <textarea
         value={content}
         onChange={(e) => setContent(e.target.value)}
-        className="w-full p-2 text-sm border border-input rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent min-h-[60px]"
+        className={`w-full p-2 text-sm border rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent min-h-[60px] ${
+          error ? 'border-destructive' : 'border-input'
+        }`}
         disabled={isLoading}
         autoFocus
       />
+      {error && (
+        <div className="text-xs text-destructive">
+          Failed to save changes. Please try again.
+        </div>
+      )}
       <div className="flex items-center space-x-2">
         <Button
           type="submit"
