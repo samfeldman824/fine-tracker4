@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -32,10 +33,23 @@ export function FineForm({ onSuccess, onCancel }: FineFormProps) {
   const onSubmit = async (data: CreateFineInput) => {
     try {
       await createFineMutation.mutateAsync(data)
+      
+      // Get the subject name for the toast
+      const selectedUser = users?.data?.find(user => user.id === data.subject_id)
+      const subjectName = selectedUser?.display_name || 'Unknown User'
+      
+      // Show success toast
+      toast.success(`${fineTypeLabels[data.fine_type]} created successfully!`, {
+        description: `${data.fine_type === 'fine' ? '$' + data.amount.toFixed(2) : data.fine_type === 'credit' ? 'FC $' + data.amount.toFixed(2) : 'Warning'} for ${subjectName}`,
+      })
+      
       form.reset()
       onSuccess?.()
     } catch (error) {
       console.error('Failed to create fine:', error)
+      toast.error('Failed to create fine', {
+        description: 'Please try again. If the problem persists, contact support.',
+      })
     }
   }
 
