@@ -65,6 +65,41 @@ export function FineThread({ fine }: FineThreadProps) {
 
   const actualCommentCount = comments.length
 
+  // Generate consistent avatar colors based on user names using a hash function
+  const getAvatarColor = (name: string, seed = '') => {
+    // Available avatar background colors
+    const colors = [
+      'bg-red-500',
+      'bg-blue-500', 
+      'bg-green-500',
+      'bg-purple-500',
+      'bg-pink-500',
+      'bg-indigo-500',
+      'bg-teal-500',
+      'bg-orange-500',
+      'bg-cyan-500',
+      'bg-lime-500',
+      'bg-rose-500',
+      'bg-amber-500',
+      'bg-emerald-500',
+      'bg-violet-500',
+      'bg-sky-500'
+    ]
+    
+    // Create input string from name and optional seed for consistent hashing
+    const input = (name.trim() + seed).toLowerCase()
+    let hash = 0
+    
+    // DJB2 hash algorithm - produces good distribution across color range
+    for (let i = 0; i < input.length; i++) {
+      hash = (hash * 33) ^ input.charCodeAt(i)
+    }
+    
+    // Convert hash to valid array index and return corresponding color
+    const index = Math.abs(hash) % colors.length
+    return colors[index]
+  }
+
   return (
     <div className="space-y-2">
       {/* Main Fine Card - Acts like the main Slack message */}
@@ -171,6 +206,7 @@ export function FineThread({ fine }: FineThreadProps) {
                   key={comment.id}
                   comment={comment}
                   currentUser={user}
+                  getAvatarColor={getAvatarColor}
                 />
               ))}
             </div>
@@ -207,9 +243,10 @@ export function FineThread({ fine }: FineThreadProps) {
 interface CommentItemProps {
   comment: Comment
   currentUser: any
+  getAvatarColor: (name: string, seed?: string) => string
 }
 
-function CommentItem({ comment, currentUser }: CommentItemProps) {
+function CommentItem({ comment, currentUser, getAvatarColor }: CommentItemProps) {
   const [isEditing, setIsEditing] = useState(false)
   
   const deleteCommentMutation = useDeleteComment()
@@ -267,8 +304,8 @@ function CommentItem({ comment, currentUser }: CommentItemProps) {
     <div className="group hover:bg-muted/30 rounded p-2 -m-2 transition-colors">
       <div className="flex items-start space-x-3">
         {/* Avatar placeholder */}
-        <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
-          <span className="text-xs font-medium text-primary">
+        <div className={`w-8 h-8 ${getAvatarColor(comment.author_name)} rounded-full flex items-center justify-center flex-shrink-0`}>
+          <span className="text-xs font-medium text-white">
             {comment.author_name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()}
           </span>
         </div>
