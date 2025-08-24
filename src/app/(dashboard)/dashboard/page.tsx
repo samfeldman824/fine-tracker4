@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { ProtectedRoute } from '@/components/features/auth/protected-route'
 import { LogoutButton } from '@/components/features/auth/logout-button'
 import { FineForm, FineList } from '@/components/features/fines'
@@ -13,6 +13,20 @@ export default function DashboardPage() {
   const [showFineForm, setShowFineForm] = useState(false)
   const { data: summary, isLoading: summaryLoading } = useFinesSummary()
   const { data: recentComments, isLoading: commentsLoading } = useRecentComments(8)
+
+  // Handle ESC key to close modal
+  useEffect(() => {
+    const handleEscapeKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && showFineForm) {
+        setShowFineForm(false)
+      }
+    }
+
+    document.addEventListener('keydown', handleEscapeKey)
+    return () => {
+      document.removeEventListener('keydown', handleEscapeKey)
+    }
+  }, [showFineForm])
 
   return (
     <ProtectedRoute>
