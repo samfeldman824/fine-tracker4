@@ -304,7 +304,7 @@ function CommentItem({ comment, currentUser, getAvatarColor }: CommentItemProps)
     <div className="group hover:bg-muted/30 rounded p-2 -m-2 transition-colors">
       <div className="flex items-start space-x-3">
         {/* Avatar placeholder */}
-        <div className={`w-8 h-8 ${getAvatarColor(comment.author_name)} rounded-full flex items-center justify-center flex-shrink-0`}>
+        <div className={`w-8 h-8 ${getAvatarColor(comment.author_name)} rounded-lg flex items-center justify-center flex-shrink-0`}>
           <span className="text-xs font-medium text-white">
             {comment.author_name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()}
           </span>
