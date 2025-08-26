@@ -8,6 +8,7 @@ import { useRealtimeComments } from '@/hooks/comments/use-realtime-comments'
 import { useAuthWithProfile } from '@/hooks/auth/use-auth-with-profile'
 import { CommentForm, ReplyForm } from './comment-form'
 import type { Comment, CommentWithReplies, CommentSortOption } from '@/lib/validations/comments'
+import { User } from '@supabase/supabase-js'
 
 interface CommentListProps {
   fineId: string
@@ -90,7 +91,7 @@ export function CommentList({
 interface CommentThreadProps {
   comment: CommentWithReplies
   fineId: string
-  currentUser: any
+  currentUser: User | null
 }
 
 // Main thread component that shows a root comment and its replies
@@ -140,7 +141,7 @@ function CommentThread({ comment, fineId, currentUser }: CommentThreadProps) {
 interface CommentItemProps {
   comment: CommentWithReplies | Comment
   fineId: string
-  currentUser: any
+  currentUser: User | null
   isReply: boolean
 }
 
