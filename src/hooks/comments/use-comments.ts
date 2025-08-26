@@ -15,7 +15,8 @@ import type {
   CreateCommentInput, 
   UpdateCommentInput, 
   CommentFilters, 
-  CommentSortOption 
+  CommentSortOption, 
+  CommentWithReplies
 } from '@/lib/validations/comments'
 import { useAuthWithProfile } from '@/hooks/auth/use-auth-with-profile'
 
@@ -238,7 +239,7 @@ export function useOptimisticCreateComment() {
       const threadsQueryKey = commentsKeys.threaded(input.fine_id)
       const previousThreads = queryClient.getQueryData(threadsQueryKey)
 
-      queryClient.setQueryData(threadsQueryKey, (old: any) => {
+      queryClient.setQueryData(threadsQueryKey, (old: { data: CommentWithReplies[] } | undefined) => {
         if (!old?.data) return old
         
         if (input.parent_id) {
