@@ -29,7 +29,7 @@ export function useRealtimeComments({
     // Update flat comments list
     queryClient.setQueryData(
       commentsKeys.list(fineId),
-      (old: any) => {
+      (old: { data: Comment[] } | undefined) => {
         if (!old?.data) return old
         return {
           ...old,
@@ -41,7 +41,7 @@ export function useRealtimeComments({
     // Update threaded comments - Slack-style (simpler structure)
     queryClient.setQueryData(
       commentsKeys.threaded(fineId),
-      (old: any) => {
+      (old: { data: CommentWithReplies[] } | undefined) => {
         if (!old?.data) return old
         
         if (!comment.parent_id) {
@@ -91,7 +91,7 @@ export function useRealtimeComments({
     // Update in flat list
     queryClient.setQueryData(
       commentsKeys.list(fineId),
-      (old: any) => {
+      (old: { data: Comment[] } | undefined) => {
         if (!old?.data) return old
         return {
           ...old,
@@ -105,7 +105,7 @@ export function useRealtimeComments({
     // Update in threaded structure - Slack-style
     queryClient.setQueryData(
       commentsKeys.threaded(fineId),
-      (old: any) => {
+      (old: { data: CommentWithReplies[] } | undefined) => {
         if (!old?.data) return old
         
         return {
@@ -141,7 +141,7 @@ export function useRealtimeComments({
     // Remove from flat list if hard deleted, or update if soft deleted
     queryClient.setQueryData(
       commentsKeys.list(fineId),
-      (old: any) => {
+      (old: { data: Comment[] } | undefined) => {
         if (!old?.data) return old
         
         if (comment.is_deleted) {
@@ -165,7 +165,7 @@ export function useRealtimeComments({
     // Update in threaded structure - Slack-style
     queryClient.setQueryData(
       commentsKeys.threaded(fineId),
-      (old: any) => {
+      (old: { data: CommentWithReplies[] } | undefined) => {
         if (!old?.data) return old
         
         return {
@@ -257,20 +257,6 @@ export function useRealtimeCommentActivity(options?: {
   useEffect(() => {
     if (!options?.enabled) return
 
-    // This would require a broader subscription or multiple subscriptions
-    // For now, we'll keep it simple and just invalidate recent comments
-    const handleActivity = (type: 'insert' | 'update' | 'delete', comment: Comment) => {
-      // Invalidate recent comments
-      queryClient.invalidateQueries({ queryKey: commentsKeys.recent() })
-      
-      // Call custom callback
-      options.onActivity?.({
-        type,
-        comment,
-        fineId: comment.fine_id
-      })
-    }
-
     // In a real implementation, you might subscribe to a global comments channel
     // or use database triggers/functions to notify of all comment activity
     
@@ -278,7 +264,7 @@ export function useRealtimeCommentActivity(options?: {
     return () => {
       // Cleanup
     }
-  }, [options?.enabled, options?.onActivity, queryClient])
+  }, [options?.enabled])
 
   return {
     // Method to manually refresh recent comments
