@@ -6,12 +6,10 @@ import { LogoutButton } from '@/components/features/auth/logout-button'
 import { FineForm, FineList } from '@/components/features/fines'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { useFinesSummary } from '@/hooks/fines/use-fines'
 import { useRecentComments } from '@/hooks/comments/use-comments'
 
 export default function DashboardPage() {
   const [showFineForm, setShowFineForm] = useState(false)
-  const { data: summary, isLoading: summaryLoading } = useFinesSummary()
   const { data: recentComments, isLoading: commentsLoading } = useRecentComments(8)
 
   // Handle ESC key to close modal
