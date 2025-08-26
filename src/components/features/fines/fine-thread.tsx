@@ -9,6 +9,7 @@ import { useRealtimeComments } from '@/hooks/comments/use-realtime-comments'
 import { useAuthWithProfile } from '@/hooks/auth/use-auth-with-profile'
 import { fineTypeLabels, fineTypeColors, type FineType } from '@/lib/validations/fines'
 import type { Comment } from '@/lib/validations/comments'
+import { User } from '@supabase/supabase-js'
 
 interface FineThreadProps {
   fine: {
@@ -242,7 +243,7 @@ export function FineThread({ fine }: FineThreadProps) {
 
 interface CommentItemProps {
   comment: Comment
-  currentUser: any
+  currentUser: User | null
   getAvatarColor: (name: string, seed?: string) => string
 }
 

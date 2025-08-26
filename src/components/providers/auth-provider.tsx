@@ -7,8 +7,8 @@ import type { User } from '@supabase/supabase-js'
 type AuthContextType = {
   user: User | null
   loading: boolean
-  signOut: () => Promise<{ error: any }>
-  signIn: (email: string, password: string) => Promise<{ data: any; error: any }>
+  signOut: () => Promise<{ error: Error | null }>
+  signIn: (email: string, password: string) => Promise<{ data: User | null; error: Error | null }>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)

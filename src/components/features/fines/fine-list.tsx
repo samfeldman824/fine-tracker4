@@ -7,8 +7,9 @@ import { FineThread } from './fine-thread'
 import { FineForm } from './fine-form'
 import { useFines } from '@/hooks/fines/use-fines'
 import { useThreadedComments } from '@/hooks/comments/use-comments'
-import { fineTypeLabels, fineTypeColors, type FineType, type FineFilters } from '@/lib/validations/fines'
+import { type FineType, type FineFilters } from '@/lib/validations/fines'
 import { Fine } from '@/lib/supabase/queries/fines'
+import { Comment, CommentWithReplies } from '@/lib/validations/comments'
 
 interface FineListProps {
   showCreateForm?: boolean
@@ -324,6 +325,12 @@ interface CompactFineItemProps {
   onClick: () => void
 }
 
+interface Commenter {
+  id: string
+  name: string
+  username: string
+}
+
 function CompactFineItem({ fine, onClick }: CompactFineItemProps) {
   // Fetch comments for this fine to show participant avatars and count
   const { data: comments } = useThreadedComments(fine.id)
@@ -386,14 +393,14 @@ function CompactFineItem({ fine, onClick }: CompactFineItemProps) {
 
   // Extract unique commenters from the comment threads for avatar display
   const commenters = comments?.data ? 
-    Array.from(new Set(comments.data.flatMap((thread: any) => 
+    Array.from(new Set(comments.data.flatMap((thread: CommentWithReplies) => 
       // Flatten main comments and their replies into a single array
-      [thread, ...(thread.replies || [])].map((comment: any) => ({
+      [thread, ...(thread.replies || [])].map((comment: Comment) => ({
         id: comment.author_id,
         name: comment.author_name,
         username: comment.author_username
       }))
-    ).map((commenter: any) => JSON.stringify(commenter)))) // Stringify for Set deduplication
+    ).map((commenter: Commenter) => JSON.stringify(commenter)))) // Stringify for Set deduplication
     .map((commenterStr: string) => JSON.parse(commenterStr)) // Parse back to objects
     .slice(0, 3) // Limit to 3 avatars to prevent UI overflow
     : []
@@ -444,7 +451,7 @@ function CompactFineItem({ fine, onClick }: CompactFineItemProps) {
               {/* Display mini avatars of people who have commented */}
               {commenters.length > 0 && (
                 <div className="flex space-x-1 ml-1">
-                  {commenters.map((commenter: any) => (
+                  {commenters.map((commenter: Commenter) => (
                     <div
                       key={commenter.id}
                       className={`w-4 h-4 rounded ${getAvatarColor(commenter.name, 'commenter')} flex items-center justify-center text-white text-xs font-medium border border-white`}
