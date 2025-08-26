@@ -4,7 +4,6 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/auth/use-auth";
 
@@ -15,7 +14,6 @@ export function LoginForm() {
   const [error, setError] = useState("");
   const router = useRouter();
   const { signIn } = useAuth();
-  const supabase = createClient();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,8 +28,12 @@ export function LoginForm() {
         return;
       }
       
-      // Supabase handles session automatically
-      router.push('/dashboard'); 
+      if (data?.user) {
+        // Successfully logged in
+        router.push('/dashboard');
+      } else {
+        setError("Login failed - no user data received");
+      } 
     } catch (err) {
       setError("An error occurred during login");
       console.error('Login error:', err);
