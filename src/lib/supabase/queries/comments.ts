@@ -59,7 +59,10 @@ export async function getComments(fineId: string, filters?: CommentFilters, sort
 }
 
 // Get comments in Slack-style threading (top-level comments with flat replies)
-export async function getThreadedComments(fineId: string, sort: CommentSortOption = 'thread'): Promise<{ data: CommentWithReplies[] | null, error: any }> {
+export async function getThreadedComments(
+  fineId: string, 
+  sort: CommentSortOption = 'thread'
+): Promise<{ data: CommentWithReplies[] | null; error: Error | null }> {
   const commentsQuery = getComments(fineId, undefined, sort)
   const { data: comments, error } = await commentsQuery
   
