@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { User } from '@supabase/supabase-js'
 import { createClient } from '@/lib/supabase/client'
 import type { Tables } from '@/lib/supabase/types'
@@ -13,7 +13,7 @@ export function useAuthWithProfile() {
   const [loading, setLoading] = useState(true)
   const supabase = createClient()
 
-  const fetchProfile = async (userId: string) => {
+  const fetchProfile = useCallback(async (userId: string) => {
     const { data, error } = await supabase
       .from('users')
       .select('*')
@@ -23,7 +23,7 @@ export function useAuthWithProfile() {
     if (!error && data) {
       setProfile(data)
     }
-  }
+  }, [supabase])
 
   useEffect(() => {
     // Get initial session
@@ -55,7 +55,7 @@ export function useAuthWithProfile() {
     })
 
     return () => subscription.unsubscribe()
-  }, [supabase.auth])
+  }, [supabase.auth, fetchProfile])
 
   return {
     user,
